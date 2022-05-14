@@ -12,7 +12,7 @@ class DashboardWidget {
 
   init = (): Promise<void> => (
     Dashboard.registerWidget(async (dashboardApi, registerWidgetApi) => {
-      dashboardApi.setTitle('Frontend global status');
+      dashboardApi.setTitle('Frontend experiments');
       registerWidgetApi({
         onRefresh: () => {},
       });
