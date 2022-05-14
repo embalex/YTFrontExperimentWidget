@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "esnext",
+    "lib": [
+      "es2016", "dom"
+    ],
+    "jsx": "react",
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "importHelpers": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": ["*"],
+      "clientSrc": ["client/src"],
+      "clientSrc/*": ["client/src/*"]
+    },
+    "skipLibCheck": true,
+    "sourceMap": true,
+    "strict": true,
+    "incremental": true,
+    "esModuleInterop": true
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}
