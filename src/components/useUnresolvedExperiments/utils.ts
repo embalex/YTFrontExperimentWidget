@@ -83,3 +83,108 @@ export const getClosingIssues = (src: IssueDto): ClosingIssue[] => {
     };
   });
 };
+
+const compareByType = (
+  type: UnresolvedExperiment['type'],
+  value1: UnresolvedExperiment,
+  value2: UnresolvedExperiment,
+): number | null => {
+  if (value1.type === type && value2.type !== type) {
+    return -1;
+  }
+
+  if (value1.type !== type && value2.type === type) {
+    return 1;
+  }
+
+  if (value1.type !== type && value2.type === type) {
+    return 0;
+  }
+
+  return null;
+};
+
+const compareByDecisionDate = (
+  value1: UnresolvedExperiment,
+  value2: UnresolvedExperiment,
+): number | null => {
+  if (value1.type !== 'valid' || value2.type !== 'valid') {
+    throw new Error(`compareByDecisionDate. Value type is invalid: ${JSON.stringify({ value1, value2 })}`);
+  }
+
+  const value1Duration = value1.closingIssue.durationInDaysToDecisionDate;
+  const value2Duration = value2.closingIssue.durationInDaysToDecisionDate;
+
+  // 1. Passed
+  if (value1Duration.type === 'passed' && value2Duration.type !== 'passed') {
+    return -1;
+  }
+
+  if (value1Duration.type !== 'passed' && value2Duration.type === 'passed') {
+    return 1;
+  }
+
+  if (value1Duration.type === 'passed' && value2Duration.type === 'passed') {
+    // compare by days
+    return value2Duration.value - value1Duration.value;
+  }
+
+  // 2. Today
+  if (value1Duration.type === 'equal' && value2Duration.type !== 'equal') {
+    return -1;
+  }
+
+  if (value1Duration.type !== 'equal' && value2Duration.type === 'equal') {
+    return 1;
+  }
+
+  if (value1Duration.type === 'equal' && value2Duration.type === 'equal') {
+    return 0;
+  }
+
+  // 3. Left
+  if (value1Duration.type === 'left' && value2Duration.type !== 'left') {
+    return -1;
+  }
+
+  if (value1Duration.type !== 'left' && value2Duration.type === 'left') {
+    return 1;
+  }
+
+  if (value1Duration.type === 'left' && value2Duration.type === 'left') {
+    return value1Duration.value - value2Duration.value;
+  }
+
+  return null;
+};
+
+export const compareUnresolvedExperiments = (
+  a: UnresolvedExperiment,
+  b: UnresolvedExperiment,
+): number => {
+  // 1. Tasks without closing issue
+  const comparedByWithoutClosingIssue = compareByType('isWithoutClosingIssue', a, b);
+  if (comparedByWithoutClosingIssue !== null) {
+    return comparedByWithoutClosingIssue;
+  }
+
+  // 2. Tasks with more than one closing issue
+  const comparedByWithMoreThanOneClosingIssue = compareByType('isMoreThanOneClosingIssue', a, b);
+  if (comparedByWithMoreThanOneClosingIssue !== null) {
+    return comparedByWithMoreThanOneClosingIssue;
+  }
+
+  // 3. Tasks without decision date
+  const comparedByWithoutDecisionDate = compareByType('isWithoutDecisionDate', a, b);
+  if (comparedByWithoutDecisionDate !== null) {
+    return comparedByWithoutDecisionDate;
+  }
+
+  // 4. Tasks with decision date
+  const comparedByDecisionDate = compareByDecisionDate(a, b);
+  if (comparedByDecisionDate !== null) {
+    return comparedByDecisionDate;
+  }
+
+  return 0;
+};

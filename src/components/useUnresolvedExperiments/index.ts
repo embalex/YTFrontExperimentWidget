@@ -5,7 +5,7 @@ import {
   makeLoadingResource, Resource, makeErrorResource, makeContentResource,
 } from '../../utils';
 import { UnresolvedExperiment, IssueDto } from './types';
-import { getClosingIssues, makeIssue } from './utils';
+import { compareUnresolvedExperiments, getClosingIssues, makeIssue } from './utils';
 
 export const useUnresolvedExperiments = ():Resource<UnresolvedExperiment[]> => {
   const [value, setValue] = useState<Resource<UnresolvedExperiment[]>>(makeLoadingResource());
@@ -17,7 +17,7 @@ export const useUnresolvedExperiments = ():Resource<UnresolvedExperiment[]> => {
 
       try {
         const all = await DashboardWidget.fetch<IssueDto[]>(`api/issues?fields=idReadable,summary,created,${linksQuery}&query=${encodeURI(queryAll)}`);
-        const experiments = all.map<UnresolvedExperiment | null>((dto) => {
+        const experiments = (all.map<UnresolvedExperiment | null>((dto) => {
           const issue = makeIssue(
             `${dto.idReadable}: ${dto.summary}`,
             dto.created ? new Date(dto.created) : null,
@@ -42,7 +42,8 @@ export const useUnresolvedExperiments = ():Resource<UnresolvedExperiment[]> => {
             ? issue.withoutDecisionDate(closingIssue.name)
             : issue.valid(closingIssue.name, closingIssue.decisionDate);
         })
-          .filter(Boolean);
+          .filter(Boolean) as UnresolvedExperiment[])
+          .sort(compareUnresolvedExperiments);
 
         setValue(makeContentResource(experiments as UnresolvedExperiment[]));
       } catch (e) {
