@@ -5,3 +5,10 @@
     margin-bottom: 16px;
     padding: 0 8px;
 }
+
+.issue__thumb-up {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50%;
+}

@@ -18,9 +18,14 @@ export const UnresolvedExperiments: React.FC = () => {
     return <p>Нешмогла я, сложно там все.</p>;
   }
 
+  const issues = getContent(unresolved);
+  if (issues.length === 0) {
+    return <img src="thumbUp.svg" alt="thumbUp" className="issue__thumb-up" />;
+  }
+
   return (
     <>
-      {getContent(unresolved).map((issue) => (
+      {issues.map((issue) => (
         <div className="issue__block" style={{ borderColor: getBorderColor(issue) }} key={issue.name}>
           <p>{issue.name}</p>
           {issue.type === 'isMoreThanOneClosingIssue' && <p>Эксперимент имеет больше, чем одну закрывающую задачу</p>}
