@@ -4,41 +4,45 @@ import {
 import { DecisionDateRegExp, ExperimentTag } from '../../constants';
 import { calcDurationInDays } from '../../utils';
 
-export const makeIssue = (name: string, createdDate: Date | null) => ({
-  withMoreThanOneClosingTag: ():UnresolvedExperiment => ({
-    type: 'isMoreThanOneClosingIssue',
-    name,
-    createdDate,
-  }),
-  withoutClosingIssue: ():UnresolvedExperiment => ({
-    type: 'isWithoutClosingIssue',
-    name,
-    createdDate,
-  }),
-  withoutDecisionDate: (
-    closingIssueName: string,
-  ): UnresolvedExperiment => ({
-    type: 'isWithoutDecisionDate',
-    name,
-    createdDate,
-    closingIssue: {
-      name: closingIssueName,
-    },
-  }),
-  valid: (
-    closingIssueName: string,
-    closingIssueDecisionDate: Date,
-  ): UnresolvedExperiment => ({
-    type: 'valid',
-    name,
-    createdDate,
-    closingIssue: {
-      name: closingIssueName,
-      decisionDate: closingIssueDecisionDate,
-      durationInDaysToDecisionDate: calcDurationInDays(closingIssueDecisionDate),
-    },
-  }),
-});
+export const makeIssue = (name: string, resolveDate: Date | null) => {
+  const durationFromResolvingInDays = resolveDate === null ? null : calcDurationInDays(resolveDate);
+
+  return {
+    withMoreThanOneClosingTag: ():UnresolvedExperiment => ({
+      type: 'isMoreThanOneClosingIssue',
+      name,
+      durationFromResolvingInDays,
+    }),
+    withoutClosingIssue: ():UnresolvedExperiment => ({
+      type: 'isWithoutClosingIssue',
+      name,
+      durationFromResolvingInDays,
+    }),
+    withoutDecisionDate: (
+      closingIssueName: string,
+    ): UnresolvedExperiment => ({
+      type: 'isWithoutDecisionDate',
+      name,
+      durationFromResolvingInDays,
+      closingIssue: {
+        name: closingIssueName,
+      },
+    }),
+    valid: (
+      closingIssueName: string,
+      closingIssueDecisionDate: Date,
+    ): UnresolvedExperiment => ({
+      type: 'valid',
+      name,
+      durationFromResolvingInDays,
+      closingIssue: {
+        name: closingIssueName,
+        decisionDate: closingIssueDecisionDate,
+        durationInDaysToDecisionDate: calcDurationInDays(closingIssueDecisionDate),
+      },
+    }),
+  };
+};
 
 export const getClosingIssues = (src: IssueDto): ClosingIssue[] => {
   const relatedIssuesLinks = src.links.filter(({ linkType }) => linkType.name === 'Relates');

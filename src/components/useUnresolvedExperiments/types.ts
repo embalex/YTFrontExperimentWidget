@@ -32,7 +32,7 @@ export type ClosingIssue = {
 
 export type UnresolvedExperiment = {
   name: string;
-  createdDate: Date | null;
+  durationFromResolvingInDays: DurationInDays | null;
 } & ({
   type: 'isMoreThanOneClosingIssue'
 } | {

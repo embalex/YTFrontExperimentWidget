@@ -28,6 +28,9 @@ export const UnresolvedExperiments: React.FC = () => {
       {issues.map((issue) => (
         <div className="issue__block" style={{ borderColor: getBorderColor(issue) }} key={issue.name}>
           <p>{issue.name}</p>
+          {issue.durationFromResolvingInDays && issue.durationFromResolvingInDays.type === 'passed' && (
+            <p>{`Эксперимент длится уже ${issue.durationFromResolvingInDays.value} дн.`}</p>
+          )}
           {issue.type === 'isMoreThanOneClosingIssue' && <p>Эксперимент имеет больше, чем одну закрывающую задачу</p>}
           {issue.type === 'isWithoutClosingIssue' && <p>Эксперимент не имеет закрывающую задачу</p>}
           {issue.type === 'isWithoutDecisionDate' && (
