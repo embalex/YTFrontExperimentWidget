@@ -12,13 +12,16 @@ export const useUnresolvedExperiments = ():Resource<UnresolvedExperiment[]> => {
 
   useEffect(() => {
     const getUnresolvedExperiments = async () => {
-      const queryAll = `Team: Frontend Tag: {${ExperimentTag.Create}}`;
+      const queryAll = `Team: Frontend Tag: {${ExperimentTag.Create}} State: Resolved`;
       const linksQuery = 'links(linkType(name),issues(tags(name),summary,idReadable,resolved,comments(text,deleted)))';
 
       try {
-        const all = await DashboardWidget.fetch<IssueDto[]>(`api/issues?fields=idReadable,summary,${linksQuery}&query=${encodeURI(queryAll)}`);
+        const all = await DashboardWidget.fetch<IssueDto[]>(`api/issues?fields=idReadable,summary,created,${linksQuery}&query=${encodeURI(queryAll)}`);
         const experiments = all.map<UnresolvedExperiment | null>((dto) => {
-          const issue = makeIssue(`${dto.idReadable}: ${dto.summary}`, 'unknown');
+          const issue = makeIssue(
+            `${dto.idReadable}: ${dto.summary}`,
+            dto.created ? new Date(dto.created) : null,
+          );
 
           const closingIssues = getClosingIssues(dto);
 
@@ -31,9 +34,13 @@ export const useUnresolvedExperiments = ():Resource<UnresolvedExperiment[]> => {
           }
 
           const closingIssue = closingIssues[0];
-          return closingIssue.isClosed
-            ? null
-            : issue.validated(closingIssue.name, closingIssue.decisionDate);
+          if (closingIssue.isClosed) {
+            return null;
+          }
+
+          return closingIssue.decisionDate === null
+            ? issue.withoutDecisionDate(closingIssue.name)
+            : issue.valid(closingIssue.name, closingIssue.decisionDate);
         })
           .filter(Boolean);
 

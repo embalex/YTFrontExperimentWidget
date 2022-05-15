@@ -1,3 +1,5 @@
+import { DurationInDays } from '../../utils';
+
 export type LinkedIssueDto = {
   tags: { name: string }[];
   summary: string;
@@ -12,6 +14,7 @@ export type LinkedIssueDto = {
 export type IssueDto = {
   idReadable: string;
   summary: string;
+  created: number;
   links: {
     linkType: { name: string };
     issues: LinkedIssueDto[];
@@ -24,17 +27,26 @@ export type ClosingIssue = {
   isClosed: true;
 } | {
   isClosed: false;
-  decisionDate: string | null;
+  decisionDate: Date | null;
 });
 
 export type UnresolvedExperiment = {
   name: string;
+  createdDate: Date | null;
 } & ({
-  type: 'isMoreThanOneClosedIssue' | 'isWithoutClosingIssue'
+  type: 'isMoreThanOneClosingIssue'
 } | {
-  type: 'validated',
+  type: 'isWithoutClosingIssue'
+} | {
+  type: 'isWithoutDecisionDate',
   closingIssue: {
     name: string;
-    decisionDate: string | null;
+  };
+} | {
+  type: 'valid',
+  closingIssue: {
+    name: string;
+    decisionDate: Date;
+    durationInDaysToDecisionDate: DurationInDays;
   };
 });

@@ -1,6 +1,11 @@
 import React from 'react';
-import { useUnresolvedExperiments } from './useUnresolvedExperiments';
-import { getContent, isErrorResource, isLoadingResource } from '../../utils';
+import { useUnresolvedExperiments } from '../useUnresolvedExperiments';
+import {
+  getContent, isErrorResource, isLoadingResource,
+} from '../../utils';
+import { DecisionInformation } from '../DecisionInformation';
+import { getBorderColor } from './utils';
+import './Unresolvedexperiments.css';
 
 export const UnresolvedExperiments: React.FC = () => {
   const unresolved = useUnresolvedExperiments();
@@ -15,13 +20,26 @@ export const UnresolvedExperiments: React.FC = () => {
 
   return (
     <>
-      <h4>Активные эксперименты</h4>
-      {getContent(unresolved).map(({ name }) => (
-        <div key={name}>
-          <p>{name}</p>
-          <p>Закрывающая задача: (...)</p>
-          <p>{`Реализован: ${'createdDate'}, (столько-то дней назад)`}</p>
-          <p>{`Ожидается принятие решения по закрытию: ${'дата принятия решения'}, (осталось NNN дней)`}</p>
+      {getContent(unresolved).map((issue) => (
+        <div className="issue__block" style={{ borderColor: getBorderColor(issue) }} key={issue.name}>
+          <p>{issue.name}</p>
+          {issue.type === 'isMoreThanOneClosingIssue' && <p>Эксперимент имеет больше, чем одну закрывающую задачу</p>}
+          {issue.type === 'isWithoutClosingIssue' && <p>Эксперимент не имеет закрывающую задачу</p>}
+          {issue.type === 'isWithoutDecisionDate' && (
+            <>
+              <p>{`Закрывающая задача: ${issue.closingIssue.name}`}</p>
+              <p>Нет времени принятия решения!</p>
+            </>
+          )}
+          {issue.type === 'valid' && (
+            <>
+              <p>{`Закрывающая задача: ${issue.closingIssue.name}`}</p>
+              <DecisionInformation
+                decisionDate={issue.closingIssue.decisionDate}
+                durationInDays={issue.closingIssue.durationInDaysToDecisionDate}
+              />
+            </>
+          )}
         </div>
       ))}
     </>
