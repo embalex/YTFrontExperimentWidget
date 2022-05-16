@@ -21,8 +21,13 @@ export type IssueDto = {
   }[]
 };
 
+export type IssueName = {
+  id: string;
+  summary: string;
+};
+
 export type ClosingIssue = {
-  name: string;
+  name: IssueName;
 } & ({
   isClosed: true;
 } | {
@@ -31,7 +36,7 @@ export type ClosingIssue = {
 });
 
 export type UnresolvedExperiment = {
-  name: string;
+  name: IssueName;
   durationFromResolvingInDays: DurationInDays | null;
 } & ({
   type: 'isMoreThanOneClosingIssue'
@@ -40,12 +45,12 @@ export type UnresolvedExperiment = {
 } | {
   type: 'isWithoutDecisionDate',
   closingIssue: {
-    name: string;
+    name: IssueName;
   };
 } | {
   type: 'valid',
   closingIssue: {
-    name: string;
+    name: IssueName;
     decisionDate: Date;
     durationInDaysToDecisionDate: DurationInDays;
   };

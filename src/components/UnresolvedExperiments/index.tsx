@@ -26,8 +26,12 @@ export const UnresolvedExperiments: React.FC = () => {
   return (
     <>
       {issues.map((issue) => (
-        <div className="issue__block" style={{ borderColor: getBorderColor(issue) }} key={issue.name}>
-          <p>{issue.name}</p>
+        <div className="issue__block" style={{ borderColor: getBorderColor(issue) }} key={issue.name.id}>
+          <p>
+            <a href={`issue/${issue.name.id}`} target="_blank" rel="noreferrer">{issue.name.id}</a>
+            &nbsp;
+            {issue.name.summary}
+          </p>
           {issue.durationFromResolvingInDays && issue.durationFromResolvingInDays.type === 'passed' && (
             <p>{`Эксперимент длится уже ${issue.durationFromResolvingInDays.value} дн.`}</p>
           )}
@@ -41,7 +45,13 @@ export const UnresolvedExperiments: React.FC = () => {
           )}
           {issue.type === 'valid' && (
             <>
-              <p>{`Закрывающая задача: ${issue.closingIssue.name}`}</p>
+              <p>
+                Закрывающая задача:
+                &nbsp;
+                <a href={`issue/${issue.name.id}`} target="_blank" rel="noreferrer">{issue.name.id}</a>
+                &nbsp;
+                {issue.name.summary}
+              </p>
               <DecisionInformation
                 decisionDate={issue.closingIssue.decisionDate}
                 durationInDays={issue.closingIssue.durationInDaysToDecisionDate}

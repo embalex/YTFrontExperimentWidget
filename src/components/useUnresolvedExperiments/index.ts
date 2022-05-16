@@ -19,7 +19,7 @@ export const useUnresolvedExperiments = ():Resource<UnresolvedExperiment[]> => {
         const all = await DashboardWidget.fetch<IssueDto[]>(`api/issues?fields=idReadable,summary,created,${linksQuery}&query=${encodeURI(queryAll)}`);
         const experiments = (all.map<UnresolvedExperiment | null>((dto) => {
           const issue = makeIssue(
-            `${dto.idReadable}: ${dto.summary}`,
+            { id: dto.idReadable, summary: dto.summary },
             dto.created ? new Date(dto.created) : null,
           );
 

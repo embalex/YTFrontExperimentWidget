@@ -6,6 +6,10 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--ring-heading-color);
 }
 
+a {
+    color: var(--ring-link-color);
+}
+
 .menion {
     display: block;
     margin-left: auto;

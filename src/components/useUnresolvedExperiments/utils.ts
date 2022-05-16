@@ -1,10 +1,10 @@
 import {
-  ClosingIssue, IssueDto, LinkedIssueDto, UnresolvedExperiment,
+  ClosingIssue, IssueDto, LinkedIssueDto, UnresolvedExperiment, IssueName,
 } from './types';
 import { DecisionDateRegExp, ExperimentTag } from '../../constants';
 import { calcDurationInDays } from '../../utils';
 
-export const makeIssue = (name: string, resolveDate: Date | null) => {
+export const makeIssue = (name: IssueName, resolveDate: Date | null) => {
   const durationFromResolvingInDays = resolveDate === null ? null : calcDurationInDays(resolveDate);
 
   return {
@@ -19,7 +19,7 @@ export const makeIssue = (name: string, resolveDate: Date | null) => {
       durationFromResolvingInDays,
     }),
     withoutDecisionDate: (
-      closingIssueName: string,
+      closingIssueName: IssueName,
     ): UnresolvedExperiment => ({
       type: 'isWithoutDecisionDate',
       name,
@@ -29,7 +29,7 @@ export const makeIssue = (name: string, resolveDate: Date | null) => {
       },
     }),
     valid: (
-      closingIssueName: string,
+      closingIssueName: IssueName,
       closingIssueDecisionDate: Date,
     ): UnresolvedExperiment => ({
       type: 'valid',
@@ -57,7 +57,10 @@ export const getClosingIssues = (src: IssueDto): ClosingIssue[] => {
   });
 
   return closingIssues.map<ClosingIssue>((closingIssueDto) => {
-    const name = `${closingIssueDto.idReadable}: ${closingIssueDto.summary}`;
+    const name: IssueName = {
+      id: closingIssueDto.idReadable,
+      summary: closingIssueDto.summary,
+    };
 
     if (closingIssueDto.resolved) {
       return {
