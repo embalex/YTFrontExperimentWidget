@@ -28,7 +28,7 @@ export const UnresolvedExperiments: React.FC = () => {
       {issues.map((issue) => (
         <div className="issue__block" style={{ borderColor: getBorderColor(issue) }} key={issue.name.id}>
           <p>
-            <a href={`issue/${issue.name.id}`} target="_blank" rel="noreferrer">{issue.name.id}</a>
+            <a href={`/issue/${issue.name.id}`} target="_blank" rel="noreferrer">{issue.name.id}</a>
             &nbsp;
             {issue.name.summary}
           </p>
@@ -48,7 +48,7 @@ export const UnresolvedExperiments: React.FC = () => {
               <p>
                 Закрывающая задача:
                 &nbsp;
-                <a href={`issue/${issue.name.id}`} target="_blank" rel="noreferrer">{issue.name.id}</a>
+                <a href={`/issue/${issue.name.id}`} target="_blank" rel="noreferrer">{issue.name.id}</a>
                 &nbsp;
                 {issue.name.summary}
               </p>
