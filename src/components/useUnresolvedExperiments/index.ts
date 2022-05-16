@@ -47,6 +47,7 @@ export const useUnresolvedExperiments = ():Resource<UnresolvedExperiment[]> => {
 
         setValue(makeContentResource(experiments as UnresolvedExperiment[]));
       } catch (e) {
+        console.log(e);
         setValue(makeErrorResource(e as Error));
       }
     };

@@ -104,7 +104,7 @@ const compareByType = (
     return 1;
   }
 
-  if (value1.type !== type && value2.type === type) {
+  if (value1.type === type && value2.type === type) {
     return 0;
   }
 
