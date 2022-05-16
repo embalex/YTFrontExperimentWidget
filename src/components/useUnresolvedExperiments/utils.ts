@@ -105,6 +105,28 @@ const compareByType = (
   }
 
   if (value1.type === type && value2.type === type) {
+    if (value1.durationFromResolvingInDays !== null
+        && value2.durationFromResolvingInDays === null
+    ) {
+      return -1;
+    }
+
+    if (value1.durationFromResolvingInDays === null
+        && value2.durationFromResolvingInDays !== null
+    ) {
+      return 1;
+    }
+
+    if (value1.durationFromResolvingInDays !== null
+        && value2.durationFromResolvingInDays !== null
+    ) {
+      if (value1.durationFromResolvingInDays.type !== 'passed' || value2.durationFromResolvingInDays.type !== 'passed') {
+        throw new Error(`compareByType. One of values has unexpected duration type (should be 'passed') Values: ${JSON.stringify({ value1, value2 })}`);
+      }
+
+      return value2.durationFromResolvingInDays.value - value1.durationFromResolvingInDays.value;
+    }
+
     return 0;
   }
 

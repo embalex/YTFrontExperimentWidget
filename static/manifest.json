@@ -1,6 +1,6 @@
 {
   "key": "youtrack-frontend-experiments-widget",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "name": "Frontend experiments",
   "description": "Widget shows experiments in frontend.",
   "author": "embalex",
