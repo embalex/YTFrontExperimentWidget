@@ -39,7 +39,13 @@ export const UnresolvedExperiments: React.FC = () => {
           {issue.type === 'isWithoutClosingIssue' && <p>Эксперимент не имеет закрывающую задачу</p>}
           {issue.type === 'isWithoutDecisionDate' && (
             <>
-              <p>{`Закрывающая задача: ${issue.closingIssue.name}`}</p>
+              <p>
+                Закрывающая задача:
+                &nbsp;
+                <a href={`/issue/${issue.closingIssue.name.id}`} target="_blank" rel="noreferrer">{issue.closingIssue.name.id}</a>
+                &nbsp;
+                {issue.closingIssue.name.summary}
+              </p>
               <p>Нет времени принятия решения!</p>
             </>
           )}
@@ -48,9 +54,9 @@ export const UnresolvedExperiments: React.FC = () => {
               <p>
                 Закрывающая задача:
                 &nbsp;
-                <a href={`/issue/${issue.name.id}`} target="_blank" rel="noreferrer">{issue.name.id}</a>
+                <a href={`/issue/${issue.closingIssue.name.id}`} target="_blank" rel="noreferrer">{issue.closingIssue.name.id}</a>
                 &nbsp;
-                {issue.name.summary}
+                {issue.closingIssue.name.summary}
               </p>
               <DecisionInformation
                 decisionDate={issue.closingIssue.decisionDate}
