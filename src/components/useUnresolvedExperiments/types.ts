@@ -15,6 +15,7 @@ export type IssueDto = {
   idReadable: string;
   summary: string;
   created: number;
+  resolved: number | null;
   links: {
     linkType: { name: string };
     issues: LinkedIssueDto[];

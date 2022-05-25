@@ -16,11 +16,11 @@ export const useUnresolvedExperiments = ():Resource<UnresolvedExperiment[]> => {
       const linksQuery = 'links(linkType(name),issues(tags(name),summary,idReadable,resolved,comments(text,deleted)))';
 
       try {
-        const all = await DashboardWidget.fetch<IssueDto[]>(`api/issues?fields=idReadable,summary,created,${linksQuery}&query=${encodeURI(queryAll)}`);
+        const all = await DashboardWidget.fetch<IssueDto[]>(`api/issues?fields=idReadable,summary,created,resolved,${linksQuery}&query=${encodeURI(queryAll)}`);
         const experiments = (all.map<UnresolvedExperiment | null>((dto) => {
           const issue = makeIssue(
             { id: dto.idReadable, summary: dto.summary },
-            dto.created ? new Date(dto.created) : null,
+            dto.resolved ? new Date(dto.resolved) : null,
           );
 
           const closingIssues = getClosingIssues(dto);
