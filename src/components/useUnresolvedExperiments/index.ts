@@ -9,7 +9,9 @@ import { compareUnresolvedExperiments, getClosingIssues, makeIssue } from './uti
 
 const RELOAD_INTERVAL_MS = 30000;
 
-export const useUnresolvedExperiments = ():Resource<UnresolvedExperiment[]> => {
+export const useUnresolvedExperiments = (
+  registerRefreshCallback: (callback: () => void) => void,
+):Resource<UnresolvedExperiment[]> => {
   const [value, setValue] = useState<Resource<UnresolvedExperiment[]>>(makeLoadingResource());
 
   useEffect(() => {
@@ -55,7 +57,7 @@ export const useUnresolvedExperiments = ():Resource<UnresolvedExperiment[]> => {
         setValue(makeErrorResource(e as Error));
       }
     };
-
+    registerRefreshCallback(getUnresolvedExperiments);
     getUnresolvedExperiments();
     timer = window.setInterval(getUnresolvedExperiments, RELOAD_INTERVAL_MS);
 

@@ -23,7 +23,7 @@ const App:React.FC = () => {
     return <img src="minion.svg" alt="Menion" className="menion" />;
   }
 
-  return <UnresolvedExperiments />;
+  return <UnresolvedExperiments registerRefreshCallback={DashboardWidget.registerRefreshCallback} />;
 };
 
 const element = document.getElementById('app');

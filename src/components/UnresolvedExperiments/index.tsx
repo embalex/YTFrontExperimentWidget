@@ -7,8 +7,12 @@ import { DecisionInformation } from '../DecisionInformation';
 import { getBorderColor } from './utils';
 import './Unresolvedexperiments.css';
 
-export const UnresolvedExperiments: React.FC = () => {
-  const unresolved = useUnresolvedExperiments();
+type Props = {
+  registerRefreshCallback: (callback: () => void) => void;
+};
+
+export const UnresolvedExperiments: React.FC<Props> = ({ registerRefreshCallback }) => {
+  const unresolved = useUnresolvedExperiments(registerRefreshCallback);
 
   if (isLoadingResource(unresolved)) {
     return <p>Подождите, сейчас разберусь и все покажу ))</p>;

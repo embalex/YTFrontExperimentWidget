@@ -10,11 +10,18 @@ class DashboardWidget {
 
   private userCanUseTags: boolean | null = null;
 
+  private refreshCallback: (() => void) | null = null;
+
   init = (): Promise<void> => (
     Dashboard.registerWidget(async (dashboardApi, registerWidgetApi) => {
       dashboardApi.setTitle('Frontend experiments');
       registerWidgetApi({
-        onRefresh: () => {},
+        onRefresh: () => {
+          if (this.refreshCallback === null) {
+            return;
+          }
+          this.refreshCallback();
+        },
       });
 
       this.widgetApi = dashboardApi;
@@ -45,6 +52,10 @@ class DashboardWidget {
 
     return this.userCanUseTags;
   }
+
+  registerRefreshCallback = (refreshCallback: () => void) => {
+    this.refreshCallback = refreshCallback;
+  };
 
   private updateUserCanUseTag = async (): Promise<boolean> => {
     try {
