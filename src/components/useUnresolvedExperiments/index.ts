@@ -7,10 +7,14 @@ import {
 import { UnresolvedExperiment, IssueDto } from './types';
 import { compareUnresolvedExperiments, getClosingIssues, makeIssue } from './utils';
 
+const RELOAD_INTERVAL_MS = 30000;
+
 export const useUnresolvedExperiments = ():Resource<UnresolvedExperiment[]> => {
   const [value, setValue] = useState<Resource<UnresolvedExperiment[]>>(makeLoadingResource());
 
   useEffect(() => {
+    let timer: null | number = null;
+
     const getUnresolvedExperiments = async () => {
       const queryAll = `Team: Frontend Tag: {${ExperimentTag.Create}} State: Resolved`;
       const linksQuery = 'links(linkType(name),issues(tags(name),summary,idReadable,resolved,comments(text,deleted)))';
@@ -51,7 +55,16 @@ export const useUnresolvedExperiments = ():Resource<UnresolvedExperiment[]> => {
         setValue(makeErrorResource(e as Error));
       }
     };
+
     getUnresolvedExperiments();
+    timer = window.setInterval(getUnresolvedExperiments, RELOAD_INTERVAL_MS);
+
+    return () => {
+      if (timer === null) {
+        return;
+      }
+      window.clearInterval(timer);
+    };
   }, []);
 
   return value;
