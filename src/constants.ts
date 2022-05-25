@@ -1,5 +1,5 @@
 export enum ExperimentTag {
-  Create = 'FE Create experiment', Close = 'FE Close Experiment', Not = 'FE Not experiment',
+  Create = 'FE Create experiment', Close = 'FE Close experiment',
 }
 
 // Decision date string: 'Decision date: YYYY.MM.DD'

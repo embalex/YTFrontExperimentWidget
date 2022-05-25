@@ -61,7 +61,7 @@ class DashboardWidget {
     try {
       const tagsInfo = await this.fetch<{ name: string | null }[]>('api/issueTags?fields=name&$top=1000');
       const tagsNames = tagsInfo.map(({ name }) => name).filter(Boolean) as string[];
-      const tags = [ExperimentTag.Create, ExperimentTag.Close, ExperimentTag.Not];
+      const tags = [ExperimentTag.Create, ExperimentTag.Close];
 
       return tags.reduce((isUserCanUseTags, tag) => {
         if (!isUserCanUseTags) {
